@@ -16,11 +16,49 @@
         }
 
         .container {
-            background-color: #fff;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            background-color: #f4f4f4;
             padding: 20px;
-            text-align: center;
+        }
+
+        .sidebar {
+            background-color: #e5e5e5;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .navigation {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .nav-button {
+            background-color: #fff;
+            color: #0070c9;
+            border: none;
+            border-radius: 10px;
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .nav-button.selected {
+            background-color: #0070c9;
+            color: #fff;
+        }
+
+        .page {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            transition: background-color 0.3s;
+        }
+
+        .page.selected {
+            background-color: #ffffff;
         }
 
         h1 {
@@ -53,11 +91,21 @@
 </head>
 <body>
     <div class="container">
-        <h1>Welcome to myNSLink</h1> <!-- Updated text here -->
-        <div id="output"></div>
+        <div class="sidebar">
+            <div class="navigation">
+                <button class="nav-button selected">Get Started</button>
+                <button class="nav-button">Select Classes</button>
+            </div>
+        </div>
+        <div id="output" class="page">
+            <h1>Welcome to myNSLink</h1>
+            <div class="content">
+                <!-- Page content goes here -->
+            </div>
+        </div>
 
         <script>
-            let currentStep = 0; // Declare currentStep outside of the function
+            let currentStep = 0;
 
             function getCookie(name) {
                 const value = `; ${document.cookie}`;
@@ -68,7 +116,6 @@
             function askForName() {
                 const name = getCookie("name");
                 if (name) {
-                    // Name is already set, proceed to class selection
                     startClassSelection(name);
                 } else {
                     const nameInput = document.createElement("input");
@@ -88,10 +135,7 @@
                 const nameInput = document.querySelector("input[type='text']");
                 const name = nameInput.value;
                 if (name) {
-                    // Save the name in cookies
                     document.cookie = `name=${name}`;
-
-                    // Start the class selection flow with the first period
                     startClassSelection(name);
                 } else {
                     alert("Please enter your name.");
@@ -148,15 +192,12 @@
             function saveAndProceed() {
                 const selectedClass = document.getElementById("classSelect").value;
 
-                // Save the class selection in cookies
                 document.cookie = `${periodOptions[currentStep]}=${selectedClass}`;
 
-                // Move to the next step
                 currentStep++;
                 startClassSelection(getCookie("name"));
             }
 
-            // Start by asking for the name
             askForName();
         </script>
     </div>
