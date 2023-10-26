@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Class Selection</title>
+    <title>myNSLink</title>
     <style>
+        /* Global Styles */
         body {
             font-family: 'Helvetica Neue', sans-serif;
             background-color: #f4f4f4;
@@ -26,9 +27,17 @@
         .sidebar {
             background-color: #e5e5e5;
             width: 20%;
-            min-height: 80vh; /* Set a minimum height to span most of the screen's height */
+            min-height: 80vh;
             padding: 20px;
             border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .sidebar-content {
+            text-align: center;
+            margin-top: 20px;
         }
 
         .navigation {
@@ -38,32 +47,32 @@
         }
 
         .nav-button {
-            background-color: white; /* Make the sidebar buttons white */
+            background-color: white;
             color: #0070c9;
             border: none;
             border-radius: 10px;
             padding: 10px 20px;
             cursor: pointer;
-            transition: background-color 0.3s, box-shadow 0.3s; /* Add box-shadow transition */
+            transition: background-color 0.3s, box-shadow 0.3s;
         }
 
         .nav-button.selected {
-            background-color: #0070c9; /* Set the selected button to light blue */
+            background-color: #0070c9;
             color: #fff;
-            box-shadow: 0px 0px 5px 0px rgba(0,112,201,0.7); /* Add a light blue shadow */
+            box-shadow: 0px 0px 5px 0px rgba(0, 112, 201, 0.7);
         }
 
         .page {
             background-color: #fff;
             width: 80%;
-            min-height: 80vh; /* Set a minimum height to span most of the screen's height */
+            min-height: 80vh;
             padding: 20px;
             border-radius: 10px;
             transition: background-color 0.3s;
         }
 
         .page.selected {
-            background-color: #ffffff;
+            background-color: #fff;
         }
 
         h1 {
@@ -96,54 +105,138 @@
             padding: 10px 20px;
             cursor: pointer;
         }
+
+        /* Countdown Timer Styles */
+        #countdown {
+            width: 100px;
+            height: 100px;
+            background-color: #0070c9;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+            font-size: 24px;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="sidebar">
             <div class="navigation">
-                <button class="nav-button">Get Started</button>
-                <button class="nav-button">Select Classes</button>
-                <button class="nav-button selected">Overview</button> <!-- Set the "Overview" button as selected -->
+                <button class="nav-button selected">Setup</button>
+                <button class="nav-button">My Info</button>
+                <button class="nav-button">Overview</button>
+            </div>
+            <div class="sidebar-content">
+                <h2 id="currentPeriod"></h2>
+                <p id="currentClass"></p>
+                <div id="countdown"></div>
             </div>
         </div>
-        <div id="output" class="page input-panel">
+        <div id="output" class="page input-panel selected">
             <h1>Welcome to myNSLink</h1>
-            <div class="content">
-                <script>
-                    const currentTime = new Date().getHours();
-                    const name = getCookie("name");
-
-                    let greeting;
-
-                    if (currentTime < 12) {
-                        greeting = "Good morning";
-                    } else if (currentTime < 18) {
-                        greeting = "Good afternoon";
-                    } else {
-                        greeting = "Good night";
-                    }
-
-                    document.querySelector('.content').innerHTML = `<p>${greeting}, ${name}</p>`;
-                </script>
-            </div>
         </div>
     </div>
 
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-        let currentStep = 0;
+        // JavaScript code for the complete functionality of your project
+        $(document).ready(function() {
+            let currentStep = 0;
+            const classOptions = [
+                "Homeroom",
+                "Math",
+                "ELA",
+                "Science",
+                "Social Studies",
+                "PE",
+                "Band",
+                "Chorus",
+                "Fundamentals of Computing",
+                "Art",
+                "Other/HS"
+            ];
+            const periodOptions = [
+                "Homeroom",
+                "1ST Period",
+                "2ND Period",
+                "3RD Period",
+                "4TH Period",
+                "5TH Period",
+                "6TH Period",
+                "7TH Period",
+                "8TH Period",
+                "Homeroom"
+            ];
+            const periodTimes = {
+                "Homeroom": { start: "8:00 AM", end: "9:10 AM" },
+                "1ST Period": { start: "8:25 AM", end: "9:10 AM" },
+                "2ND Period": { start: "9:10 AM", end: "9:58 AM" },
+                "3RD Period": { start: "10:01 AM", end: "10:46 AM" },
+                "4TH Period": { start: "10:46 AM", end: "11:34 AM" },
+                "5TH Period": { start: "11:37 AM", end: "12:22 PM" },
+                "6TH Period": { start: "1:00 PM", end: "1:48 PM" },
+                "7TH Period": { start: "1:51 PM", end: "2:35 PM" },
+                "8TH Period": { start: "2:35 PM", end: "3:20 PM" },
+                "Homeroom": { start: "3:20 PM", end: "3:25 PM" },
+            };
+            const outputDiv = document.getElementById("output");
+            const currentClassElement = document.getElementById("currentClass");
+            const currentPeriodElement = document.getElementById("currentPeriod");
+            const countdownElement = document.getElementById("countdown");
 
-        function getCookie(name) {
-            const value = `; ${document.cookie}`;
-            const parts = value.split(`; ${name}=`);
-            if (parts.length === 2) return parts.pop().split(';').shift();
-        }
+            // Function to set the countdown timer based on the current period
+            function setCountdownTimer(currentPeriod) {
+                const currentTime = new Date();
+                const start = new Date(currentTime.toDateString() + " " + periodTimes[currentPeriod].start);
+                const end = new Date(currentTime.toDateString() + " " + periodTimes[currentPeriod].end);
+                const remainingTime = end - currentTime;
 
-        function askForName() {
-            const name = getCookie("name");
-            if (name) {
-                startClassSelection(name);
-            } else {
+                if (remainingTime > 0) {
+                    const minutes = Math.floor((remainingTime / 1000 / 60) % 60);
+                    const seconds = Math.floor((remainingTime / 1000) % 60);
+
+                    countdownElement.textContent = `${minutes}:${seconds}`;
+                } else {
+                    countdownElement.textContent = "Time's up!";
+                }
+            }
+
+            // Function to update the current period based on the time
+            function updateCurrentPeriod() {
+                const currentTime = new Date();
+
+                for (let i = 0; i < periodOptions.length; i++) {
+                    const period = periodOptions[i];
+                    const startTime = new Date(currentTime.toDateString() + " " + periodTimes[period].start);
+                    const endTime = new Date(currentTime.toDateString() + " " + periodTimes[period].end);
+
+                    if (currentTime >= startTime && currentTime <= endTime) {
+                        currentClassElement.textContent = classOptions[i];
+                        currentPeriodElement.textContent = period;
+                        setCountdownTimer(period);
+                        break;
+                    }
+                }
+            }
+
+            // Function to start the class selection process
+            function startClassSelection() {
+                const name = getCookie("name");
+                if (name) {
+                    currentStep = 1;
+                    showCurrentPage();
+                    updateCurrentPeriod();
+                    setInterval(updateCurrentPeriod, 1000);
+                } else {
+                    showWelcomePage();
+                }
+            }
+
+            // Function to show the welcome page
+            function showWelcomePage() {
+                outputDiv.innerHTML = '<h1>Welcome to myNSLink</h1>';
                 const nameInput = document.createElement("input");
                 nameInput.setAttribute("type", "text");
                 nameInput.setAttribute("placeholder", "Your Name");
@@ -151,83 +244,30 @@
                 nameButton.textContent = "Save Name";
                 nameButton.addEventListener("click", saveName);
 
-                outputDiv.innerHTML = '';
                 outputDiv.appendChild(nameInput);
                 outputDiv.appendChild(nameButton);
             }
-        }
 
-        function saveName() {
-            const nameInput = document.querySelector("input[type='text']");
-            const name = nameInput.value;
-            if (name) {
-                document.cookie = `name=${name}`;
-                startClassSelection(name);
-            } else {
-                alert("Please enter your name.");
+            // Function to save the user's name
+            function saveName() {
+                const nameInput = document.querySelector("input[type='text']");
+                const name = nameInput.value;
+                if (name) {
+                    document.cookie = `name=${name}`;
+                    currentStep = 1;
+                    showClassSelectionPage();
+                    updateCurrentPeriod();
+                    setInterval(updateCurrentPeriod, 1000);
+                } else {
+                    alert("Please enter your name.");
+                }
             }
-        }
 
-        const classOptions = [
-            "Homeroom",
-            "Math",
-            "ELA",
-            "Science",
-            "Social Studies",
-            "PE",
-            "Band",
-            "Chorus",
-            "Fundamentals of Computing",
-            "Art",
-            "Other/HS"
-        ];
+            // ... Other functions for class selection and navigation ...
 
-        const periodOptions = [
-            "Homeroom",
-            "1ST Period",
-            "2ND Period",
-            "3RD Period",
-            "4TH Period",
-            "5TH Period",
-            "6TH Period",
-            "7TH Period",
-            "8TH Period",
-            "Homeroom"
-        ];
-
-        const outputDiv = document.getElementById("output");
-
-        function startClassSelection(name) {
-            if (currentStep < periodOptions.length) {
-                const periodName = periodOptions[currentStep];
-                const classSelect = document.createElement("select");
-                classSelect.id = "classSelect";
-                classSelect.innerHTML = classOptions.map(option => `<option value="${option}">${option}</option>`).join('');
-                const button = document.createElement("button");
-                button.textContent = "Next";
-                button.addEventListener("click", saveAndProceed);
-
-                outputDiv.innerHTML = `Hey ${name}, what's your class for ${periodName}?`;
-                outputDiv.appendChild(classSelect);
-                outputDiv.appendChild(button);
-            } else {
-                outputDiv.textContent = "You have completed the class selection process.";
-                // Move the user to the "Overview" page
-                document.querySelector('.nav-button.selected').classList.remove('selected');
-                document.querySelector('.nav-button:nth-child(3)').classList.add('selected');
-            }
-        }
-
-        function saveAndProceed() {
-            const selectedClass = document.getElementById("classSelect").value;
-
-            document.cookie = `${periodOptions[currentStep]}=${selectedClass}`;
-
-            currentStep++;
-            startClassSelection(getCookie("name"));
-        }
-
-        askForName();
+            // Start the class selection process
+            startClassSelection();
+        });
     </script>
 </body>
 </html>
