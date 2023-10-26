@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Class Selection</title>
+    <style>
+        body {
+            font-family: 'Helvetica Neue', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        .container {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #0070c9;
+        }
+
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+            margin: 5px 0;
+        }
+
+        button {
+            background-color: #0070c9;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Select Your Classes and Periods</h1>
+        
+        <!-- Class selection -->
+        <label for="classSelect">Select your class:</label>
+        <select id="classSelect">
+            <option value="Homeroom">Homeroom</option>
+            <option value="Math">Math</option>
+            <option value="ELA">ELA</option>
+            <option value="Science">Science</option>
+            <option value="Social Studies">Social Studies</option>
+            <option value="PE">PE</option>
+            <option value="Band">Band</option>
+            <option value="Chorus">Chorus</option>
+            <option value="Fundamentals of Computing">Fundamentals of Computing</option>
+            <option value="Art">Art</option>
+            <option value="Other/HS">Other/HS</option>
+        </select>
+
+        <!-- Period selection -->
+        <label for="periodSelect">Select period(s):</label>
+        <select id="periodSelect" multiple>
+            <option value="Homeroom">Homeroom (8AM-8:25 AM)</option>
+            <option value="1stPeriod">1ST Period (8:25 AM - 9:10 AM)</option>
+            <option value="2ndPeriod">2ND Period (9:10 AM - 9:58 AM)</option>
+            <option value="3rdPeriod">3RD Period (10:01 AM - 10:46 AM)</option>
+            <option value="4thPeriod">4TH Period (10:46 AM - 11:34 AM)</option>
+            <option value="5thPeriod">5TH Period (11:37 AM - 12:22 PM)</option>
+            <option value="Lunch">LUNCH/COURTYARD (12:22-12:57 PM)</option>
+            <option value="6thPeriod">6TH Period (11:37 PM - 1:00 PM)</option>
+            <option value="7thPeriod">7TH Period (1:00 PM - 1:48 PM)</option>
+            <option value="8thPeriod">8TH Period (1:48 PM - 3:20 PM)</option>
+            <option value="Homeroom2">Homeroom (3:20 PM - 3:25 PM)</option>
+        </select>
+
+        <!-- Button to submit the selection -->
+        <button onclick="submitSelection()">Submit Selection</button>
+
+        <script>
+            function submitSelection() {
+                const selectedClass = document.getElementById("classSelect").value;
+                const selectedPeriods = [...document.getElementById("periodSelect").selectedOptions].map(option => option.value);
+
+                // You can perform actions with the selected data here, like sending it to a server or processing it further.
+                // For this example, we'll just display the selection in the console.
+                console.log("Selected Class: " + selectedClass);
+                console.log("Selected Periods: " + selectedPeriods.join(", "));
+            }
+        </script>
+    </div>
+</body>
+</html>
