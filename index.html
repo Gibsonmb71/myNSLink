@@ -54,52 +54,76 @@
 <body>
     <div class="container">
         <h1>Select Your Classes and Periods</h1>
-        
-        <!-- Class selection -->
-        <label for="classSelect">Select your class:</label>
-        <select id="classSelect">
-            <option value="Homeroom">Homeroom</option>
-            <option value="Math">Math</option>
-            <option value="ELA">ELA</option>
-            <option value="Science">Science</option>
-            <option value="Social Studies">Social Studies</option>
-            <option value="PE">PE</option>
-            <option value="Band">Band</option>
-            <option value="Chorus">Chorus</option>
-            <option value="Fundamentals of Computing">Fundamentals of Computing</option>
-            <option value="Art">Art</option>
-            <option value="Other/HS">Other/HS</option>
-        </select>
-
-        <!-- Period selection -->
-        <label for="periodSelect">Select period(s):</label>
-        <select id="periodSelect" multiple>
-            <option value="Homeroom">Homeroom (8AM-8:25 AM)</option>
-            <option value="1stPeriod">1ST Period (8:25 AM - 9:10 AM)</option>
-            <option value="2ndPeriod">2ND Period (9:10 AM - 9:58 AM)</option>
-            <option value="3rdPeriod">3RD Period (10:01 AM - 10:46 AM)</option>
-            <option value="4thPeriod">4TH Period (10:46 AM - 11:34 AM)</option>
-            <option value="5thPeriod">5TH Period (11:37 AM - 12:22 PM)</option>
-            <option value="Lunch">LUNCH/COURTYARD (12:22-12:57 PM)</option>
-            <option value="6thPeriod">6TH Period (11:37 PM - 1:00 PM)</option>
-            <option value="7thPeriod">7TH Period (1:00 PM - 1:48 PM)</option>
-            <option value="8thPeriod">8TH Period (1:48 PM - 3:20 PM)</option>
-            <option value="Homeroom2">Homeroom (3:20 PM - 3:25 PM)</option>
-        </select>
-
-        <!-- Button to submit the selection -->
-        <button onclick="submitSelection()">Submit Selection</button>
+        <div id="output"></div>
 
         <script>
-            function submitSelection() {
+            const classOptions = [
+                "Homeroom",
+                "Math",
+                "ELA",
+                "Science",
+                "Social Studies",
+                "PE",
+                "Band",
+                "Chorus",
+                "Fundamentals of Computing",
+                "Art",
+                "Other/HS"
+            ];
+
+            const periodOptions = [
+                "Homeroom (8AM-8:25 AM)",
+                "1ST Period (8:25 AM - 9:10 AM)",
+                "2ND Period (9:10 AM - 9:58 AM)",
+                "3RD Period (10:01 AM - 10:46 AM)",
+                "4TH Period (10:46 AM - 11:34 AM)",
+                "5TH Period (11:37 AM - 12:22 PM)",
+                "LUNCH/COURTYARD (12:22-12:57 PM)",
+                "6TH Period (11:37 PM - 1:00 PM)",
+                "7TH Period (1:00 PM - 1:48 PM)",
+                "8TH Period (1:48 PM - 3:20 PM)",
+                "Homeroom (3:20 PM - 3:25 PM)"
+            ];
+
+            const outputDiv = document.getElementById("output");
+            let currentStep = 0;
+
+            function nextStep() {
+                if (currentStep < classOptions.length) {
+                    const classSelect = document.createElement("select");
+                    classSelect.id = "classSelect";
+                    classSelect.innerHTML = classOptions.map(option => `<option value="${option}">${option}</option>`).join('');
+                    const periodSelect = document.createElement("select");
+                    periodSelect.id = "periodSelect";
+                    periodSelect.setAttribute("multiple", true);
+                    periodSelect.innerHTML = periodOptions.map(option => `<option value="${option}">${option}</option>`).join('');
+                    const button = document.createElement("button");
+                    button.textContent = "Next";
+                    button.addEventListener("click", saveAndProceed);
+
+                    outputDiv.innerHTML = '';
+                    outputDiv.appendChild(classSelect);
+                    outputDiv.appendChild(periodSelect);
+                    outputDiv.appendChild(button);
+                } else {
+                    outputDiv.textContent = "You have completed the selection process.";
+                }
+            }
+
+            function saveAndProceed() {
                 const selectedClass = document.getElementById("classSelect").value;
                 const selectedPeriods = [...document.getElementById("periodSelect").selectedOptions].map(option => option.value);
 
-                // You can perform actions with the selected data here, like sending it to a server or processing it further.
-                // For this example, we'll just display the selection in the console.
-                console.log("Selected Class: " + selectedClass);
-                console.log("Selected Periods: " + selectedPeriods.join(", "));
+                // Save the selection in cookies
+                document.cookie = `${selectedClass}=${JSON.stringify(selectedPeriods)}`;
+
+                // Move to the next step
+                currentStep++;
+                nextStep();
             }
+
+            // Start the flow
+            nextStep();
         </script>
     </div>
 </body>
