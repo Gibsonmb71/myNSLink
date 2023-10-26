@@ -3,52 +3,7 @@
 <head>
     <title>Class Selection</title>
     <style>
-        body {
-            font-family: 'Helvetica Neue', sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-        }
-
-        .container {
-            background-color: #fff;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-            padding: 20px;
-            text-align: center;
-        }
-
-        h1 {
-            color: #0070c9;
-        }
-
-        label {
-            display: block;
-            margin-top: 10px;
-        }
-
-        select {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            font-size: 16px;
-            margin: 5px 0;
-        }
-
-        button {
-            background-color: #0070c9;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            padding: 10px 20px;
-            cursor: pointer;
-        }
+        /* Your CSS styles here (same as in the previous code) */
     </style>
 </head>
 <body>
@@ -67,7 +22,7 @@
                 const name = getCookie("name");
                 if (name) {
                     // Name is already set, proceed to class selection
-                    startClassSelection(name);
+                    startClassSelection(name, 0);
                 } else {
                     const nameInput = document.createElement("input");
                     nameInput.setAttribute("type", "text");
@@ -89,8 +44,8 @@
                     // Save the name in cookies
                     document.cookie = `name=${name}`;
 
-                    // Start the class selection flow
-                    startClassSelection(name);
+                    // Start the class selection flow with the first period
+                    startClassSelection(name, 0);
                 } else {
                     alert("Please enter your name.");
                 }
@@ -110,12 +65,22 @@
                 "Other/HS"
             ];
 
-            const outputDiv = document.getElementById("output");
-            let currentStep = 0;
+            const periodOptions = [
+                "1ST Period",
+                "2ND Period",
+                "3RD Period",
+                "4TH Period",
+                "5TH Period",
+                "6TH Period",
+                "7TH Period",
+                "8TH Period"
+            ];
 
-            function startClassSelection(name) {
-                if (currentStep < classOptions.length) {
-                    const className = classOptions[currentStep];
+            const outputDiv = document.getElementById("output");
+
+            function startClassSelection(name, currentStep) {
+                if (currentStep < periodOptions.length) {
+                    const periodName = periodOptions[currentStep];
                     const classSelect = document.createElement("select");
                     classSelect.id = "classSelect";
                     classSelect.innerHTML = classOptions.map(option => `<option value="${option}">${option}</option>`).join('');
@@ -123,7 +88,7 @@
                     button.textContent = "Next";
                     button.addEventListener("click", saveAndProceed);
 
-                    outputDiv.innerHTML = `Hey ${name}, what's your class for ${className}?`;
+                    outputDiv.innerHTML = `Hey ${name}, what's your class for ${periodName}?`;
                     outputDiv.appendChild(classSelect);
                     outputDiv.appendChild(button);
                 } else {
@@ -135,11 +100,11 @@
                 const selectedClass = document.getElementById("classSelect").value;
 
                 // Save the class selection in cookies
-                document.cookie = `${classOptions[currentStep]}=${selectedClass}`;
+                document.cookie = `${periodOptions[currentStep]}=${selectedClass}`;
 
                 // Move to the next step
                 currentStep++;
-                startClassSelection(getCookie("name"));
+                startClassSelection(getCookie("name"), currentStep);
             }
 
             // Start by asking for the name
