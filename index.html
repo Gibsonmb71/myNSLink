@@ -38,18 +38,19 @@
         }
 
         .nav-button {
-            background-color: #fff;
+            background-color: white; /* Make the sidebar buttons white */
             color: #0070c9;
             border: none;
             border-radius: 10px;
             padding: 10px 20px;
             cursor: pointer;
-            transition: background-color 0.3s;
+            transition: background-color 0.3s, box-shadow 0.3s; /* Add box-shadow transition */
         }
 
         .nav-button.selected {
-            background-color: #0070c9;
+            background-color: #0070c9; /* Set the selected button to light blue */
             color: #fff;
+            box-shadow: 0px 0px 5px 0px rgba(0,112,201,0.7); /* Add a light blue shadow */
         }
 
         .page {
@@ -102,7 +103,8 @@
         <div class="sidebar">
             <div class="navigation">
                 <button class="nav-button selected">Get Started</button>
-                <button class "nav-button">Select Classes</button>
+                <button class="nav-button">Select Classes</button>
+                <button class="nav-button">Overview</button> <!-- Add Overview button -->
             </div>
         </div>
         <div id="output" class="page input-panel">
@@ -195,6 +197,9 @@
                 outputDiv.appendChild(button);
             } else {
                 outputDiv.textContent = "You have completed the class selection process.";
+                // Move the user to the "Overview" page
+                document.querySelector('.nav-button.selected').classList.remove('selected');
+                document.querySelector('.nav-button:nth-child(3)').classList.add('selected');
             }
         }
 
