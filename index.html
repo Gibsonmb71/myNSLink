@@ -53,10 +53,49 @@
 </head>
 <body>
     <div class="container">
-        <h1>Select Your Classes and Periods</h1>
+        <h1>Select Your Classes</h1>
         <div id="output"></div>
 
         <script>
+            function getCookie(name) {
+                const value = `; ${document.cookie}`;
+                const parts = value.split(`; ${name}=`);
+                if (parts.length === 2) return parts.pop().split(';').shift();
+            }
+
+            function askForName() {
+                const name = getCookie("name");
+                if (name) {
+                    // Name is already set, proceed to class selection
+                    startClassSelection(name);
+                } else {
+                    const nameInput = document.createElement("input");
+                    nameInput.setAttribute("type", "text");
+                    nameInput.setAttribute("placeholder", "Your Name");
+                    const nameButton = document.createElement("button");
+                    nameButton.textContent = "Save Name";
+                    nameButton.addEventListener("click", saveName);
+
+                    outputDiv.innerHTML = '';
+                    outputDiv.appendChild(nameInput);
+                    outputDiv.appendChild(nameButton);
+                }
+            }
+
+            function saveName() {
+                const nameInput = document.querySelector("input[type='text']");
+                const name = nameInput.value;
+                if (name) {
+                    // Save the name in cookies
+                    document.cookie = `name=${name}`;
+
+                    // Start the class selection flow
+                    startClassSelection(name);
+                } else {
+                    alert("Please enter your name.");
+                }
+            }
+
             const classOptions = [
                 "Homeroom",
                 "Math",
@@ -71,59 +110,40 @@
                 "Other/HS"
             ];
 
-            const periodOptions = [
-                "Homeroom (8AM-8:25 AM)",
-                "1ST Period (8:25 AM - 9:10 AM)",
-                "2ND Period (9:10 AM - 9:58 AM)",
-                "3RD Period (10:01 AM - 10:46 AM)",
-                "4TH Period (10:46 AM - 11:34 AM)",
-                "5TH Period (11:37 AM - 12:22 PM)",
-                "LUNCH/COURTYARD (12:22-12:57 PM)",
-                "6TH Period (11:37 PM - 1:00 PM)",
-                "7TH Period (1:00 PM - 1:48 PM)",
-                "8TH Period (1:48 PM - 3:20 PM)",
-                "Homeroom (3:20 PM - 3:25 PM)"
-            ];
-
             const outputDiv = document.getElementById("output");
             let currentStep = 0;
 
-            function nextStep() {
+            function startClassSelection(name) {
                 if (currentStep < classOptions.length) {
+                    const className = classOptions[currentStep];
                     const classSelect = document.createElement("select");
                     classSelect.id = "classSelect";
                     classSelect.innerHTML = classOptions.map(option => `<option value="${option}">${option}</option>`).join('');
-                    const periodSelect = document.createElement("select");
-                    periodSelect.id = "periodSelect";
-                    periodSelect.setAttribute("multiple", true);
-                    periodSelect.innerHTML = periodOptions.map(option => `<option value="${option}">${option}</option>`).join('');
                     const button = document.createElement("button");
                     button.textContent = "Next";
                     button.addEventListener("click", saveAndProceed);
 
-                    outputDiv.innerHTML = '';
+                    outputDiv.innerHTML = `Hey ${name}, what's your class for ${className}?`;
                     outputDiv.appendChild(classSelect);
-                    outputDiv.appendChild(periodSelect);
                     outputDiv.appendChild(button);
                 } else {
-                    outputDiv.textContent = "You have completed the selection process.";
+                    outputDiv.textContent = "You have completed the class selection process.";
                 }
             }
 
             function saveAndProceed() {
                 const selectedClass = document.getElementById("classSelect").value;
-                const selectedPeriods = [...document.getElementById("periodSelect").selectedOptions].map(option => option.value);
 
-                // Save the selection in cookies
-                document.cookie = `${selectedClass}=${JSON.stringify(selectedPeriods)}`;
+                // Save the class selection in cookies
+                document.cookie = `${classOptions[currentStep]}=${selectedClass}`;
 
                 // Move to the next step
                 currentStep++;
-                nextStep();
+                startClassSelection(getCookie("name"));
             }
 
-            // Start the flow
-            nextStep();
+            // Start by asking for the name
+            askForName();
         </script>
     </div>
 </body>
