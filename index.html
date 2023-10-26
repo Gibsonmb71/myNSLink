@@ -55,106 +55,108 @@
     <div class="container">
         <h1>Select Your Classes</h1>
         <div id="output"></div>
-
-        <script>
-            function getCookie(name) {
-                const value = `; ${document.cookie}`;
-                const parts = value.split(`; ${name}=`);
-                if (parts.length === 2) return parts.pop().split(';').shift();
-            }
-
-            function askForName() {
-                const name = getCookie("name");
-                if (name) {
-                    // Name is already set, proceed to class selection
-                    startClassSelection(name, 0);
-                } else {
-                    const nameInput = document.createElement("input");
-                    nameInput.setAttribute("type", "text");
-                    nameInput.setAttribute("placeholder", "Your Name");
-                    const nameButton = document.createElement("button");
-                    nameButton.textContent = "Save Name";
-                    nameButton.addEventListener("click", saveName);
-
-                    outputDiv.innerHTML = '';
-                    outputDiv.appendChild(nameInput);
-                    outputDiv.appendChild(nameButton);
-                }
-            }
-
-            function saveName() {
-                const nameInput = document.querySelector("input[type='text']");
-                const name = nameInput.value;
-                if (name) {
-                    // Save the name in cookies
-                    document.cookie = `name=${name}`;
-
-                    // Start the class selection flow with the first period
-                    startClassSelection(name, 0);
-                } else {
-                    alert("Please enter your name.");
-                }
-            }
-
-            const classOptions = [
-                "Homeroom",
-                "Math",
-                "ELA",
-                "Science",
-                "Social Studies",
-                "PE",
-                "Band",
-                "Chorus",
-                "Fundamentals of Computing",
-                "Art",
-                "Other/HS"
-            ];
-
-            const periodOptions = [
-                "1ST Period",
-                "2ND Period",
-                "3RD Period",
-                "4TH Period",
-                "5TH Period",
-                "6TH Period",
-                "7TH Period",
-                "8TH Period"
-            ];
-
-            const outputDiv = document.getElementById("output");
-
-            function startClassSelection(name, currentStep) {
-                if (currentStep < periodOptions.length) {
-                    const periodName = periodOptions[currentStep];
-                    const classSelect = document.createElement("select");
-                    classSelect.id = "classSelect";
-                    classSelect.innerHTML = classOptions.map(option => `<option value="${option}">${option}</option>`).join('');
-                    const button = document.createElement("button");
-                    button.textContent = "Next";
-                    button.addEventListener("click", saveAndProceed);
-
-                    outputDiv.innerHTML = `Hey ${name}, what's your class for ${periodName}?`;
-                    outputDiv.appendChild(classSelect);
-                    outputDiv.appendChild(button);
-                } else {
-                    outputDiv.textContent = "You have completed the class selection process.";
-                }
-            }
-
-            function saveAndProceed() {
-                const selectedClass = document.getElementById("classSelect").value;
-
-                // Save the class selection in cookies
-                document.cookie = `${periodOptions[currentStep]}=${selectedClass}`;
-
-                // Move to the next step
-                currentStep++;
-                startClassSelection(getCookie("name"), currentStep);
-            }
-
-            // Start by asking for the name
-            askForName();
-        </script>
     </div>
+
+    <script>
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+        }
+
+        function askForName() {
+            const name = getCookie("name");
+            if (name) {
+                // Name is already set, proceed to class selection
+                startClassSelection(name, 0);
+            } else {
+                const nameInput = document.createElement("input");
+                nameInput.setAttribute("type", "text");
+                nameInput.setAttribute("placeholder", "Your Name");
+                const nameButton = document.createElement("button");
+                nameButton.textContent = "Save Name";
+                nameButton.addEventListener("click", saveName);
+
+                outputDiv.innerHTML = '';
+                outputDiv.appendChild(nameInput);
+                outputDiv.appendChild(nameButton);
+            }
+        }
+
+        function saveName() {
+            const nameInput = document.querySelector("input[type='text']");
+            const name = nameInput.value;
+            if (name) {
+                // Save the name in cookies
+                document.cookie = `name=${name}`;
+
+                // Start the class selection flow with the first period
+                startClassSelection(name, 0);
+            } else {
+                alert("Please enter your name.");
+            }
+        }
+
+        const classOptions = [
+            "Homeroom",
+            "Math",
+            "ELA",
+            "Science",
+            "Social Studies",
+            "PE",
+            "Band",
+            "Chorus",
+            "Fundamentals of Computing",
+            "Art",
+            "Other/HS"
+        ];
+
+        const periodOptions = [
+            "Homeroom",
+            "1ST Period",
+            "2ND Period",
+            "3RD Period",
+            "4TH Period",
+            "5TH Period",
+            "6TH Period",
+            "7TH Period",
+            "8TH Period",
+            "Homeroom"
+        ];
+
+        const outputDiv = document.getElementById("output");
+
+        function startClassSelection(name, currentStep) {
+            if (currentStep < periodOptions.length - 1) {
+                const periodName = periodOptions[currentStep];
+                const classSelect = document.createElement("select");
+                classSelect.id = "classSelect";
+                classSelect.innerHTML = classOptions.map(option => `<option value="${option}">${option}</option>`).join('');
+                const button = document.createElement("button");
+                button.textContent = "Next";
+                button.addEventListener("click", saveAndProceed);
+
+                outputDiv.innerHTML = `Hey ${name}, what's your class for ${periodName}?`;
+                outputDiv.appendChild(classSelect);
+                outputDiv.appendChild(button);
+            } else {
+                outputDiv.textContent = "You have completed the class selection process.";
+            }
+        }
+
+        function saveAndProceed() {
+            const selectedClass = document.getElementById("classSelect").value;
+
+            // Save the class selection in cookies
+            document.cookie = `${periodOptions[currentStep]}=${selectedClass}`;
+
+            // Move to the next step
+            currentStep++;
+            startClassSelection(getCookie("name"), currentStep);
+        }
+
+        // Start by asking for the name
+        askForName();
+    </script>
 </body>
 </html>
