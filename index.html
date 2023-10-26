@@ -102,15 +102,30 @@
     <div class="container">
         <div class="sidebar">
             <div class="navigation">
-                <button class="nav-button selected">Get Started</button>
+                <button class="nav-button">Get Started</button>
                 <button class="nav-button">Select Classes</button>
-                <button class="nav-button">Overview</button> <!-- Add Overview button -->
+                <button class="nav-button selected">Overview</button> <!-- Set the "Overview" button as selected -->
             </div>
         </div>
         <div id="output" class="page input-panel">
             <h1>Welcome to myNSLink</h1>
             <div class="content">
-                <!-- Page content goes here -->
+                <script>
+                    const currentTime = new Date().getHours();
+                    const name = getCookie("name");
+
+                    let greeting;
+
+                    if (currentTime < 12) {
+                        greeting = "Good morning";
+                    } else if (currentTime < 18) {
+                        greeting = "Good afternoon";
+                    } else {
+                        greeting = "Good night";
+                    }
+
+                    document.querySelector('.content').innerHTML = `<p>${greeting}, ${name}</p>`;
+                </script>
             </div>
         </div>
     </div>
